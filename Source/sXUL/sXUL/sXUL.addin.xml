@@ -1,0 +1,22 @@
+<Addin id          = "sXUL"
+       author      = "Rasmus Pedersen"
+       copyright   = "Rasmus Pedersen"
+       url         = "http://www.sundown.dk"
+       description = "The way to good XUL applications"
+       version     = "1.0">
+	<Runtime>
+		<Import assembly="sXUL.dll"/>
+	</Runtime>
+	
+	<Dependencies>
+		<Addin id="Sorento" version="1.0"/>	
+	</Dependencies>
+										
+	<Extension path = "/SorentoLib/Init">
+		<Type type="sXUL.Addin.Init"/>
+	</Extension>												
+																
+	<Extension path = "/SorentoLib/Resolver/Ajaxes">
+		<Type type="sXUL.Addin.Ajax"/>
+	</Extension>				
+</Addin>
