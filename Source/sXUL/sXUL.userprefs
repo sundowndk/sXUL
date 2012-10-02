@@ -1,11 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/javascript/eventlistener.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/javascript/helpers/tree.js">
     <Files>
       <File FileName="sXUL/sXUL.Addin/Ajax.cs" Line="16" Column="4" />
       <File FileName="sXUL/sXUL/Event.cs" Line="142" Column="1" />
       <File FileName="sXUL/sXUL/EventListener.cs" Line="171" Column="5" />
       <File FileName="sXUL/javascript/eventlistener.js" Line="30" Column="17" />
+      <File FileName="sXUL/javascript/helpers/tree.js" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

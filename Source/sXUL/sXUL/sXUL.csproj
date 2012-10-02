@@ -69,6 +69,7 @@
     <Compile Include="sXUL.Addin\Ajax.cs" />
     <Compile Include="sXUL.Addin\Init.cs" />
     <Compile Include="sXUL\Runtime.cs" />
+    <Compile Include="javascript\helpers\tree.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -79,6 +80,7 @@
     <Folder Include="resources\js\" />
     <Folder Include="resources\html\" />
     <Folder Include="javascript\" />
+    <Folder Include="javascript\helpers\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="sXUL.addin.xml" />
