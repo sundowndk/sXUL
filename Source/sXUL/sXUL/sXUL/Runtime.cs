@@ -32,7 +32,8 @@ namespace sXUL
 				
 		static void EventhandlerServiceGarbageCollector (object Sender, EventArgs E)
 		{
-//			Global.ServiceGarbageCollector ();
+			EventListener.ServiceGarbageCollector ();
+			Event.ServiceGarbageCollector ();
 		}			
 	}
 }

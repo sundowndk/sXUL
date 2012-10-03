@@ -4,16 +4,14 @@ attach : function ()
 	request.send ();
 	
 	var result = request.respons ()["value"];
-			
-	app.events.onAuctionCreate.execute (result);
-	
+								
 	return result;
 },
 	
-detach : function (eventListenerId)
+detach : function (id)
 {
 	var content = new Array ();
-	content["eventlistenerid"] = eventListenerId;
+	content["eventlistenerid"] = id;
 
 	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Detach", "data", "POST", false);		
 	request.send (content);			
@@ -25,14 +23,11 @@ update : function (attributes)
 		attributes = new Array ();
 	
 	if (!attributes.id)
-		throw "No ID given, cannot update eventListener.1";
-		
-	if (!attributes.onDone)
-		throw "This method runs async and needs a onDone callback function.";
-	
+		throw "No ID given, cannot update eventListener";
+				
 	var content = new Array ();			
 							
-	content["eventlistenerid"] = attributes.eventListenerId;
+	content["eventlistenerid"] = attributes.id;
 	
 	if (attributes.eventId != null)
 	{
@@ -41,15 +36,18 @@ update : function (attributes)
 	
 	if (attributes.eventData != null)
 	{
-		content["eventdata"] = eventData;
+		content["eventdata"] = attributes.eventData;
 	}		
 
 	var onDone = 	function (respons)
 					{						
-						 attributes.onDone (respons["sxul.events"]);
+						if (attributes.onDone)
+						{
+							attributes.onDone (respons["sxul.events"]);
+						}
 					};
 		
 	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Update", "data", "POST", true);			
 	request.onLoaded (onDone);
-	request.send ();													
+	request.send (content);													
 }

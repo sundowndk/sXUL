@@ -179,7 +179,12 @@ namespace sXUL
 				
 				if (item.ContainsKey ("data"))
 				{
+					try
+					{
 					result._data = (Hashtable)item["data"];
+					}
+					catch
+					{}
 				}
 			}
 			catch (Exception exception)
@@ -223,7 +228,37 @@ namespace sXUL
 			
 			return result;
 		}
-		
+
+		public static List<Event> List ()
+		{
+			List<Event> result = new List<Event> ();
+
+			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
+			{
+				try
+				{
+					result.Add (Event.Load (new Guid (id)));
+				}
+				catch (Exception exception)
+				{
+					// LOG: LogDebug.ExceptionUnknown
+					SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
+					
+					// LOG: LogDebug.EventList
+					SorentoLib.Services.Logging.LogDebug (string.Format (Strings.LogDebug.EventList, id));
+				}
+			}
+			
+			result.Sort (delegate (Event e1, Event e2) { return e1.UpdateTimestamp.CompareTo (e2.UpdateTimestamp); });
+			
+			return result;
+		}
+
+		public static void Delete (Event Event)
+		{
+			Delete (Event.Id);
+		}
+
 		public static void Delete (Guid Id)
 		{			
 			try
@@ -238,6 +273,30 @@ namespace sXUL
 				// EXCEPTION: Exception.EventDeleteGuid
 				throw new Exception (string.Format (Strings.Exception.EventDeleteGuid, Id.ToString ()));
 			}			
+		}
+		#endregion
+
+		#region Internal Static Methods
+		internal static void ServiceGarbageCollector ()
+		{
+			foreach (Event _event in List ())
+			{
+				if ((SNDK.Date.DateTimeToTimestamp (DateTime.Now) - _event._createtimestamp) > 20)
+				{
+					try
+					{
+						Delete (_event);
+					}
+					catch (Exception exception)
+					{
+						// LOG: LogDebug.ExceptionUnknown
+						SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
+					}
+				}
+			}			
+			
+			// LOG: LogDebug.SessionGarbageCollector
+			SorentoLib.Services.Logging.LogDebug (Strings.LogDebug.EventGarbageCollector);
 		}
 		#endregion
 	}

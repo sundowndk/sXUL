@@ -115,7 +115,35 @@ namespace sXUL
 			
 			return result;
 		}
-		
+
+		private static List<EventListener> List ()
+		{
+			List<EventListener> result = new List<EventListener> ();
+			
+			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
+			{
+				try
+				{
+					result.Add (EventListener.Load (new Guid (id)));
+				}
+				catch (Exception exception)
+				{
+					// LOG: LogDebug.ExceptionUnknown
+					SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
+					
+					// LOG: LogDebug.EventList
+					SorentoLib.Services.Logging.LogDebug (string.Format (Strings.LogDebug.EventListenerList, id));
+				}
+			}
+						
+			return result;
+		}
+
+		public static void Delete (EventListener EventListener)
+		{
+			Delete (EventListener._id);
+		}
+
 		public static void Delete (Guid Id)
 		{			
 			try
@@ -172,6 +200,30 @@ namespace sXUL
 				Event e = new Event (Id, EventId, EventData);
 				e.Save ();
 			}
+		}
+		#endregion
+
+		#region Internal Static Methods
+		internal static void ServiceGarbageCollector ()
+		{
+			foreach (EventListener eventlistener in List ())
+			{
+				if ((SNDK.Date.DateTimeToTimestamp (DateTime.Now) - eventlistener._updatetimestamp) > 100)
+				{
+					try
+					{
+						Delete (eventlistener);
+					}
+					catch (Exception exception)
+					{
+						// LOG: LogDebug.ExceptionUnknown
+						SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
+					}
+				}
+			}			
+			
+			// LOG: LogDebug.SessionGarbageCollector
+			SorentoLib.Services.Logging.LogDebug (Strings.LogDebug.EventListenerGarbageCollector);
 		}
 		#endregion
 	}
