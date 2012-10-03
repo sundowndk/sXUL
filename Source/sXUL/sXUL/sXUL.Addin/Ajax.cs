@@ -45,6 +45,8 @@ namespace sXUL.Addin
 						{
 							if (request.ContainsXPath ("eventid"))
 							{
+//								Console.WriteLine (request.XmlDocument.InnerXml);
+
 								Hashtable item = (Hashtable)SNDK.Convert.FromXmlDocument (SNDK.Convert.XmlNodeToXmlDocument (request.GetXml ("eventdata") .SelectSingleNode ("(//eventdata)[1]")));
 
 

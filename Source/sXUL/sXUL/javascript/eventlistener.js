@@ -1,9 +1,20 @@
+id : null,
+timer : null,
+
+
 attach : function ()
 {
 	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Attach", "data", "POST", false);	
 	request.send ();
 	
 	var result = request.respons ()["value"];
+	
+	sXUL.eventListener.id = result;
+	
+	setInterval (function () {sXUL.eventListener.update ({id: sXUL.eventListener.id}) }, 3000);			
+
+	
+	//var events = sXUL.eventListener.update ({id: app.session.eventListenerId, onDone: onDone});
 								
 	return result;
 },
@@ -22,8 +33,10 @@ update : function (attributes)
 	if (!attributes)
 		attributes = new Array ();
 	
-	if (!attributes.id)
-		throw "No ID given, cannot update eventListener";
+	//if (!attributes.id)
+		//throw "No ID given, cannot update eventListener";
+		
+	//attributes.id = sXUL.eventListener.id;
 				
 	var content = new Array ();			
 							
@@ -36,15 +49,36 @@ update : function (attributes)
 	
 	if (attributes.eventData != null)
 	{
-		content["eventdata"] = attributes.eventData;
+		var test = {};
+	
+		for (index in attributes.eventData)
+		{
+			test[index] = attributes.eventData[index];
+		}
+	
+		content["eventdata"] = test;
 	}		
 
 	var onDone = 	function (respons)
-					{						
-						if (attributes.onDone)
-						{
-							attributes.onDone (respons["sxul.events"]);
-						}
+					{	
+						var events = respons["sxul.events"];
+															
+						
+							for (index in events)
+							{
+								events[index].data.SXULREMOTEEVENT = true;
+							}
+							
+							for (index in events)
+							{
+								event = events[index]
+							
+								dump ("\n"+ event.name +"\n");
+								dump (event.data +"\n");
+									
+							
+								app.events[event.name].execute (event.data);
+							}																																				
 					};
 		
 	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Update", "data", "POST", true);			

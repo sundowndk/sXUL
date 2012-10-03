@@ -329,27 +329,38 @@ tree : function (attributes)
 							
 		if (!attributes.data)
 			attributes.data = new Array ();
-										
-		if (!attributes.data.id)
+		
+		
+																										
+		if (!attributes.id)
 		{
 			row = _elements.tree.currentIndex;
 		}
 		else
-		{						
-			for (var idx = 0; idx < _elements.tree.view.rowCount; idx++) 
+		{				
+			for (var idx in _rows)
 			{
-				if (_elements.tree.view.getCellText (idx, _elements.tree.columns.getNamedColumn ('id')) == attributes.id)
-				{					
-					row = idx;				
-					break;
+				if (_rows[idx].data.id == attributes.id)
+				{			
+					_rows.splice (idx, 1);
+					break;										
 				}
-			}
+			}											
+		//	for (var idx = 0; idx < _elements.tree.view.rowCount; idx++) 
+		//	{
+		//		if (_elements.tree.view.getCellText (idx, _elements.tree.columns.getNamedColumn ('id')) == attributes.id)
+		//		{					
+		//			row = idx;				
+		//			break;
+		//		}
+		//	}
 		}
 		
-		if (row != -1)
-		{
-			_elements.tree.view.getItemAtIndex (row).parentNode.removeChild (_elements.tree.view.getItemAtIndex (row));
-		}
+		refresh ();
+		//if (row != -1)
+		//{
+		//	_elements.tree.view.getItemAtIndex (row).parentNode.removeChild (_elements.tree.view.getItemAtIndex (row));
+		//}
 	}
 			
 	function setRow (attributes)

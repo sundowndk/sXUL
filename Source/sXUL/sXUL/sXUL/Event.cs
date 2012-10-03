@@ -19,7 +19,9 @@ namespace sXUL
 		
 		private int _createtimestamp;
 		private int _updatetimestamp;
-		
+
+		private double _sort;
+
 		private string _name;
 		private Guid _ownerid;
 		private Hashtable _data;
@@ -49,7 +51,15 @@ namespace sXUL
 				return this._updatetimestamp;
 			}
 		}
-		
+
+		public double Sort
+		{
+			get
+			{
+				return this._sort;
+			}
+		}
+
 		public string Name
 		{
 			get
@@ -81,6 +91,7 @@ namespace sXUL
 			this._id = Guid.NewGuid ();
 			this._createtimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
 			this._updatetimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
+			this._sort = ((TimeSpan)(DateTime.Now - new DateTime (1970, 1, 1))).TotalMilliseconds;
 			this._ownerid = OwnerId;
 			this._name = Name;
 			this._data = Data;
@@ -91,6 +102,7 @@ namespace sXUL
 			this._id = Guid.Empty;
 			this._createtimestamp = 0;
 			this._updatetimestamp = 0;
+			this._sort = 0;
 			this._ownerid = Guid.Empty;
 			this._name = string.Empty;
 			this._data = new Hashtable ();
@@ -109,6 +121,7 @@ namespace sXUL
 				item.Add ("id", this._id);
 				item.Add ("createtimestamp", this._createtimestamp);
 				item.Add ("updatetimestamp", this._updatetimestamp);	
+				item.Add ("sort", this._sort);
 				item.Add ("name", this._name);
 				item.Add ("ownerid", this._ownerid);
 				item.Add ("data", this._data);
@@ -136,7 +149,7 @@ namespace sXUL
 			result.Add ("id", this._id);
 			result.Add ("createtimestamp", this._createtimestamp);
 			result.Add ("updatetimestamp", this._updatetimestamp);
-			
+
 			result.Add ("name", this._name);			
 			result.Add ("ownerid", this._ownerid);			
 			result.Add ("data", this._data);
@@ -166,7 +179,12 @@ namespace sXUL
 				{
 					result._updatetimestamp = int.Parse ((string)item["updatetimestamp"]);
 				}
-				
+
+				if (item.ContainsKey ("sort"))
+				{
+					result._sort = double.Parse ((string)item["sort"]);						
+				}
+
 				if (item.ContainsKey ("name"))
 				{
 					result._name = (string)item["name"];
@@ -203,13 +221,16 @@ namespace sXUL
 		{
 			List<Event> result = new List<Event> ();
 			
-			//			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle, new SorentoLib.Services.Datastore.MetaSearch ("ownerid", SorentoLib.Enums.DatastoreMetaSearchComparisonOperator.NotEqual, EventListener.Id)))
-			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
+			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle, new SorentoLib.Services.Datastore.MetaSearch ("ownerid", SorentoLib.Enums.DatastoreMetaSearchComparisonOperator.NotEqual, EventListener.Id)))
+//			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
 			{
 				try
 				{
 					Event e = Event.Load (new Guid (id));
-					if (e._updatetimestamp > EventListener.UpdateTimestamp)
+
+//					((TimeSpan)(DateTime.Now - new DateTime (1970, 1, 1)))
+//					if (e._updatetimestamp > EventListener.UpdateTimestamp)
+					if (e._updatetimestamp >= EventListener.UpdateTimestamp)
 					{
 						result.Add (e);
 					}
@@ -224,7 +245,7 @@ namespace sXUL
 				}
 			}
 			
-			result.Sort (delegate (Event e1, Event e2) { return e1.UpdateTimestamp.CompareTo (e2.UpdateTimestamp); });
+			result.Sort (delegate (Event e1, Event e2) { return e1.Sort.CompareTo (e2.Sort); });
 			
 			return result;
 		}

@@ -89,5 +89,7 @@
     <None Include="build.sh" />
     <None Include="javascript\eventlistener.js" />
     <None Include="javascript\helpers\tree.js" />
+    <None Include="javascript\console.js" />
+    <None Include="javascript\event.js" />
   </ItemGroup>
 </Project>

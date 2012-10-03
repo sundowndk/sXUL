@@ -185,7 +185,8 @@ namespace sXUL
 			{
 				Console.WriteLine ("SENDING EVENT:\n");
 				Console.WriteLine ("\tID:"+ e.Name);
-				Console.WriteLine ("\tUPDATETIMESTAMP:"+ e.UpdateTimestamp);
+				Console.WriteLine ("\tSORT:"+ e.Sort);
+				Console.WriteLine ("\tLISTENER:"+ Id);
 				Console.WriteLine ("\tOWNERID:"+ e.OwnerId);
 				Console.WriteLine ("\tDATA:"+ e.Data);
 			}						
