@@ -94,5 +94,7 @@
     <None Include="javascript\helpers\tree.js" />
     <None Include="javascript\console.js" />
     <None Include="javascript\event.js" />
+    <None Include="javascript\user.js" />
+    <None Include="javascript\usergroup.js" />
   </ItemGroup>
 </Project>

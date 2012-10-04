@@ -8,8 +8,14 @@
 				<js file="console.js" />
 			</class>
 			<class name="helpers">				
-					<js file="helpers/tree.js" />				
-			</class>		
+				<js file="helpers/tree.js" />				
+			</class>
+			<class name="user">
+				<js file="user.js" />				
+			</class>
+			<class name="usergroup">
+				<js file="usergroup.js" />				
+			</class>
 			<js file="event.js" />			
 		</class>
 	</project>	
