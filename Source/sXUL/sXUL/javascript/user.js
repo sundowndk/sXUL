@@ -1,10 +1,9 @@
-create : function (username, email)
+create : function (username)
 {
-	var request = new SNDK.ajax.request ("/", "cmd=Ajax;cmd.function=SorentoLib.User.New", "data", "POST", false);			
+	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=SorentoLib.User.New", "data", "POST", false);			
 	
 	var content = new Array ();
-	content["username"] = username;
-	content["email"] = email;
+	content["username"] = username;	
 	request.send (content);
 	
 	return request.respons ()["sorentolib.user"];		
@@ -12,7 +11,7 @@ create : function (username, email)
 
 load : function (id)
 {
-	var request = new SNDK.ajax.request ("/", "cmd=Ajax;cmd.function=SorentoLib.User.Load", "data", "POST", false);	
+	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=SorentoLib.User.Load", "data", "POST", false);	
 	
 	var content = new Array ();
 	content["id"] = id;
@@ -24,19 +23,17 @@ load : function (id)
 
 save : function (user)
 {
-	var request = new SNDK.ajax.request ("/", "cmd=Ajax;cmd.function=SorentoLib.User.Save", "data", "POST", false);				
+	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=SorentoLib.User.Save", "data", "POST", false);				
 	
 	var content = new Array ();
 	content["sorentolib.user"] = user;
 		
-	request.send (content);		
-	
-	return true;
+	request.send (content);				
 },
 
 delete : function (id)
 {
-	var request = new SNDK.ajax.request ("/", "cmd=Ajax;cmd.function=SorentoLib.User.Delete", "data", "POST", false);	
+	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=SorentoLib.User.Delete", "data", "POST", false);	
 	
 	var content = new Array ();
 	content["id"] = id;
@@ -46,13 +43,29 @@ delete : function (id)
 	return true;
 },
 
-list : function ()
-{
-	var request = new SNDK.ajax.request ("/", "cmd=Ajax;cmd.function=SorentoLib.User.List", "data", "POST", false);	
+list : function (attributes)
+{	
+	if (!attributes) 
+		attributes = new Array ();
+				
+	if (attributes.async)
+	{
+		var onDone = 	function (respons)
+						{
+							attributes.onDone (respons["sorentolib.users"]);
+						};
 		
-	request.send ();
-											
-	return request.respons ()["sorentolib.users"];
+		var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=SorentoLib.User.List", "data", "POST", true);
+		request.onLoaded (onDone);
+		request.send ();						
+	}
+	else
+	{
+		var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=SorentoLib.User.List", "data", "POST", false);		
+		request.send ();
+
+		return request.respons ()["sorentolib.users"];		
+	}
 },
 
 changePassword : function (userid, newPassword, oldPassword)
