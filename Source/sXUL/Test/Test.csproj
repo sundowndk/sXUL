@@ -29,10 +29,11 @@
     <Externalconsole>True</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Test</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,10 +46,18 @@
     <Reference Include="MySql.Data">
       <HintPath>..\..\Lib\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\sXUL\sXUL.csproj">
+      <Project>{C0528918-AA0B-4D94-AB2A-0D0A7B4829EB}</Project>
+      <Name>sXUL</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

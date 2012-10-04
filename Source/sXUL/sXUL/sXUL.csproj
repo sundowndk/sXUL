@@ -38,10 +38,11 @@
     </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Test</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -69,6 +70,8 @@
     <Compile Include="sXUL.Addin\Ajax.cs" />
     <Compile Include="sXUL.Addin\Init.cs" />
     <Compile Include="sXUL\Runtime.cs" />
+    <Compile Include="sXUL\User.cs" />
+    <Compile Include="sXUL\Usergroup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
