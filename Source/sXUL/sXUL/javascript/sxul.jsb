@@ -16,6 +16,9 @@
 			<class name="usergroup">
 				<js file="usergroup.js" />				
 			</class>
+			<class name="tools">
+				<js file="tools.js" />			
+			</class>
 			<js file="event.js" />			
 		</class>
 	</project>	

@@ -96,5 +96,6 @@
     <None Include="javascript\event.js" />
     <None Include="javascript\user.js" />
     <None Include="javascript\usergroup.js" />
+    <None Include="javascript\tools.js" />
   </ItemGroup>
 </Project>
