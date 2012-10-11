@@ -5,6 +5,7 @@ tree : function (attributes)
 	var _rows = Array ();
 	
 	var _temp = {};			
+	_temp.filterColumns = new Array ();
 	
 	this.addRow = addRow;
 	this.removeRow = removeRow;
@@ -118,26 +119,53 @@ tree : function (attributes)
 		{
 			for (index in _rows)
 			{	
-				if (_temp.filterColumn != null)
-				{
+//				if (_temp.filterColumn != null)
+//				{				
+//					if (_temp.filterDirection == "in")
+//					{							
+//						if (_rows[index].data[_temp.filterColumn].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) == -1)
+//						{
+//							//dump (_temp.filterColumn +" "+ _temp.filterValue +"\n")
+//							continue;
+//						}
+//					}
+//					else if (_temp.filterDirection == "out")
+//					{							
+//						if (_rows[index].data[_temp.filterColumn].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) != -1)
+//						{
+//							//dump (_temp.filterColumn +" "+ _temp.filterValue +"\n")
+//							continue;
+//						}
+//					}
+//				}
 				
+				if (_temp.filterColumns.length > 0)
+				{								
 					if (_temp.filterDirection == "in")
-					{							
-						if (_rows[index].data[_temp.filterColumn].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) == -1)
-						{
-							//dump (_temp.filterColumn +" "+ _temp.filterValue +"\n")
-							continue;
+					{								
+						for (i=0; i<_temp.filterColumns.length; i++)												
+						{													
+							if (_rows[index].data[_temp.filterColumns[i]].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) != -1)
+							{
+								sXUL.console.log (_rows[index].data[_temp.filterColumns[i]].toLowerCase ())
+								break;								
+							}	
 						}
+						continue;										
+						
 					}
 					else if (_temp.filterDirection == "out")
 					{							
-						if (_rows[index].data[_temp.filterColumn].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) != -1)
+						for (i1 in _temp.filterColumns)
 						{
-							//dump (_temp.filterColumn +" "+ _temp.filterValue +"\n")
-							continue;
+							if (_rows[index].data[_temp.filterColumns[i1]].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) == -1)
+							{
+								break;								
+							}	
 						}
 					}
 				}
+				
 											
 				if (_rows[index].level == idx)
 				{
@@ -263,6 +291,7 @@ tree : function (attributes)
 			attributes.direction = "in";
 			
 		_temp.filterColumn = attributes.column;
+		_temp.filterColumns = attributes.columns.split (",");
 		_temp.filterValue = attributes.value;
 		_temp.filterDirection = attributes.direction;
 		

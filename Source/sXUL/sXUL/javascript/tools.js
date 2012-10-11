@@ -1,4 +1,4 @@
-getFileToString =	function (aURL)
+fileToString : function (aURL)
 {	
 	var ioService=Components.classes["@mozilla.org/network/io-service;1"].getService(Components.interfaces.nsIIOService);
  	
@@ -11,4 +11,19 @@ getFileToString =	function (aURL)
   	scriptableStream.close();
   	input.close();
   	return str;
+},
+
+print : function (contentWindow, nsiPrintSettings)
+{
+	nsiPrintSettings.headerStrLeft = "";
+	nsiPrintSettings.headerStrCenter = "";
+	nsiPrintSettings.headerStrRight = "";
+	nsiPrintSettings.footerStrLeft = "";
+	nsiPrintSettings.footerStrCenter = "";
+	nsiPrintSettings.footerStrRight = "";
+
+  	var req = contentWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+    var wbprint = req.getInterface(Components.interfaces.nsIWebBrowserPrint);
+    
+    wbprint.print(nsiPrintSettings, null);				
 }
