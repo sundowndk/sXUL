@@ -42,10 +42,10 @@ tree : function (attributes)
 		}				
 				
 		_elements.tree.ondblclick = onDoubleClick;
-		
-		if (attributes.sort)
+						
+		if (attributes.sortColumn)
 		{
-			_temp.sortColumn = _attributes.sort;
+			_temp.sortColumn = _attributes.sortColumn;
 			_temp.sortDirection = _attributes.sortDirection;
 			
 			// Set sortdirection on newly sorted column.	
@@ -57,7 +57,9 @@ tree : function (attributes)
 			_temp.filterColumn = _attributes.filter;
 			_temp.filterValue = _attributes.filterValue;
 			_temp.filterDirection = _attributes.filterDirection;
-		}																																														
+		}									
+		
+		_elements.tree.addEventListener ("keypress", onKeypress, true);
 	};
 	
 	function onDoubleClick (event)
@@ -69,6 +71,19 @@ tree : function (attributes)
 			_attributes.onDoubleClick (index);
 		}
 	}
+	
+	function onKeypress (event)
+	{
+		// Editable
+		if (_temp.editable)
+		{		
+			if ((e.keyCode == KeyEvent.DOM_VK_TAB) || (e.keyCode == KeyEvent.DOM_VK_RETURN))
+			{				
+			}
+		}
+	}
+	
+	
 						
 	function refresh ()
 	{									
@@ -109,63 +124,49 @@ tree : function (attributes)
 		}
 		
 		// Sort rows.
-//		if (_attributes.sortColumn != null)
-//		{
+		if (_temp.sortColumn != null)
+		{
 			_rows.sort (compareFunc);
-//		}
+		}
 		
+		var filterColumnsLength = _temp.filterColumns.length;
 	
 		for (var idx = 0; idx < 11; idx++) 
 		{
 			for (index in _rows)
 			{	
-//				if (_temp.filterColumn != null)
-//				{				
-//					if (_temp.filterDirection == "in")
-//					{							
-//						if (_rows[index].data[_temp.filterColumn].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) == -1)
-//						{
-//							//dump (_temp.filterColumn +" "+ _temp.filterValue +"\n")
-//							continue;
-//						}
-//					}
-//					else if (_temp.filterDirection == "out")
-//					{							
-//						if (_rows[index].data[_temp.filterColumn].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) != -1)
-//						{
-//							//dump (_temp.filterColumn +" "+ _temp.filterValue +"\n")
-//							continue;
-//						}
-//					}
-//				}
-				
-				if (_temp.filterColumns.length > 0)
-				{								
+				if (filterColumnsLength > 0)
+				{	
+					var skip = true;
+												
 					if (_temp.filterDirection == "in")
 					{								
-						for (i=0; i<_temp.filterColumns.length; i++)												
+						for (column = 0; column < filterColumnsLength; column++)	
 						{													
-							if (_rows[index].data[_temp.filterColumns[i]].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) != -1)
-							{
-								sXUL.console.log (_rows[index].data[_temp.filterColumns[i]].toLowerCase ())
+							if (_rows[index].data[_temp.filterColumns[column]].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) != -1)
+							{	
+								skip = false;			
 								break;								
 							}	
-						}
-						continue;										
-						
+						}												
 					}
 					else if (_temp.filterDirection == "out")
 					{							
-						for (i1 in _temp.filterColumns)
+						for (column = 0; column < filterColumnsLength; column++)	
 						{
-							if (_rows[index].data[_temp.filterColumns[i1]].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) == -1)
+							if (_rows[index].data[_temp.filterColumns[column]].toLowerCase ().indexOf(_temp.filterValue.toLowerCase ()) == -1)
 							{
+								skip = false;
 								break;								
 							}	
 						}
 					}
-				}
-				
+					
+					if (skip)
+					{
+						continue;
+					}
+				}				
 											
 				if (_rows[index].level == idx)
 				{
@@ -257,19 +258,19 @@ tree : function (attributes)
 		{
 			if (_temp.sortColumn == attributes.column)
 			{
-			if (_temp.sortDirection == "ascending")
-			{
-				attributes.direction = "descending";
+				if (_temp.sortDirection == "ascending")
+				{
+					attributes.direction = "descending";
+				}
+				else
+				{
+					attributes.direction = "ascending";
+				}
 			}
 			else
 			{
 				attributes.direction = "ascending";
 			}
-		}
-		else
-		{
-			attributes.direction = "ascending";
-		}
 		}  				
 		
 		_temp.sortColumn = attributes.column;
@@ -289,8 +290,7 @@ tree : function (attributes)
 			
 		if (!attributes.direction)
 			attributes.direction = "in";
-			
-		_temp.filterColumn = attributes.column;
+					
 		_temp.filterColumns = attributes.columns.split (",");
 		_temp.filterValue = attributes.value;
 		_temp.filterDirection = attributes.direction;
