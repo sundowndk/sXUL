@@ -1,16 +1,18 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/javascript/helpers/tree.js">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/sXUL/Runtime.cs">
     <Files>
       <File FileName="Test/Main.cs" Line="54" Column="5" />
       <File FileName="sXUL/sXUL/User.cs" Line="22" Column="1" />
       <File FileName="sXUL/sXUL/Usergroup.cs" Line="21" Column="32" />
-      <File FileName="sXUL/sXUL/Runtime.cs" Line="35" Column="83" />
+      <File FileName="sXUL/sXUL/Runtime.cs" Line="27" Column="23" />
       <File FileName="sXUL/javascript/user.js" Line="3" Column="39" />
       <File FileName="sXUL/javascript/usergroup.js" Line="1" Column="7" />
       <File FileName="sXUL/build.sh" Line="1" Column="1" />
       <File FileName="sXUL/javascript/helpers/tree.js" Line="154" Column="14" />
-      <File FileName="sXUL/javascript/tools.js" Line="20" Column="39" />
+      <File FileName="sXUL/javascript/tools.js" Line="16" Column="30" />
+      <File FileName="sXUL/sXUL/Event.cs" Line="300" Column="1" />
+      <File FileName="sXUL/sXUL.Strings/LogDebug.cs" Line="11" Column="57" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
