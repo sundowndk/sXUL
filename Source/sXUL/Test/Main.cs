@@ -26,7 +26,17 @@ namespace Test
 					
 
 			bool testuser = false;
-			bool testusergroup = true;
+			bool testusergroup = false;
+			bool testconfig = true;
+
+			if (testconfig)
+			{
+				sXUL.Config.Set ("Test1", "bla bla");
+
+				sXUL.Config.Set ("Test1", true);
+
+				Console.WriteLine (sXUL.Config.Get ("Test1"));
+			}
 
 			if (testuser)
 			{			

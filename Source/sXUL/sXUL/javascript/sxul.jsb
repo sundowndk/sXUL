@@ -20,6 +20,9 @@
 				<js file="tools.js" />			
 			</class>
 			<js file="event.js" />			
+			<class name="config">
+				<js file="config.js" />			
+			</class>
 		</class>
 	</project>	
 </solution>

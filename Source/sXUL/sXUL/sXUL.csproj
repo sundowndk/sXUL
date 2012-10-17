@@ -72,6 +72,7 @@
     <Compile Include="sXUL\Runtime.cs" />
     <Compile Include="sXUL\User.cs" />
     <Compile Include="sXUL\Usergroup.cs" />
+    <Compile Include="sXUL\Config.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -97,5 +98,6 @@
     <None Include="javascript\user.js" />
     <None Include="javascript\usergroup.js" />
     <None Include="javascript\tools.js" />
+    <None Include="javascript\config.js" />
   </ItemGroup>
 </Project>

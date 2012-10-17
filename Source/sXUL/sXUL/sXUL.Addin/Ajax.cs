@@ -78,6 +78,27 @@ namespace sXUL.Addin
 					break;
 				}
 				#endregion
+
+				#region sXUL.Confog
+				case "sxul.config":
+				{	
+					switch (Method.ToLower ())
+					{					
+						case "set":
+						{
+							Config.Set (request.getValue<string> ("key"), request.getValue<string> ("value"));
+							break;
+						}
+							
+						case "get":
+						{
+							result.Add (Config.Get (request.getValue<string> ("key")));
+							break;
+						}	
+					}
+					break;
+				}
+				#endregion
 			}
 			
 			return result;
