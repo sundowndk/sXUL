@@ -22,10 +22,10 @@ namespace sXUL
 			try
 			{				
 				// Remove current symlinks
-				SNDK.IO.RemoveSymlink (SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_html) + "sxul");
+				//SNDK.IO.RemoveSymlink (SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_html) + "sxul");
 
 				// Create symlinks
-				SNDK.IO.CreateSymlink (SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_addins) + "sXUL/resources/html", SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_html) + "sxul");
+				//SNDK.IO.CreateSymlink (SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_addins) + "sXUL/resources/html", SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_html) + "sxul");
 
 				// Create default usergroups
 				UsergroupUser =	SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("cee43668-e44b-4675-b18d-3b297a84b953"), "sXUL User", AddinId.ToString ());
