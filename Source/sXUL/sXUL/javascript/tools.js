@@ -13,7 +13,7 @@ fileToString : function (aURL)
   	return str;
 },
 
-print : function (contentWindow, nsiPrintSettings)
+print : function (contentWindow, nsiPrintSettings, listener)
 {
 	nsiPrintSettings.headerStrLeft = "";
 	nsiPrintSettings.headerStrCenter = "";
@@ -25,7 +25,14 @@ print : function (contentWindow, nsiPrintSettings)
   	var req = contentWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
     var wbprint = req.getInterface(Components.interfaces.nsIWebBrowserPrint);
     
-    wbprint.print(nsiPrintSettings, null);				
+    wbprint.print(nsiPrintSettings, listener);				
+},
+
+getLocalDirectory : function () 
+{ 
+    var directoryService = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties); 
+    var localDir = directoryService.get("ProfD", Components.interfaces.nsIFile); 
+    return localDir; 
 },
 
 fileUpload : function (attributes)
@@ -44,7 +51,7 @@ fileUpload : function (attributes)
 	
 	if (!attributes.additionalFields)
 		attributes.additionalFields = {};
-			
+									
 	var data = new FormData ();
 	
 	try
@@ -72,5 +79,5 @@ fileUpload : function (attributes)
 	request.upload.addEventListener ("error", function (event) { if (attributes.onError != null) attributes.onError (event); }, false);	
   								
   	// Send request							
-  	request.send (data);  									
+  	request.send (data);  	  	  									
 }
