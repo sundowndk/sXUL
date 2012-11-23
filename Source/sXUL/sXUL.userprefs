@@ -6,7 +6,7 @@
       <File FileName="sXUL/sXUL/Config.cs" Line="136" Column="45" />
       <File FileName="sXUL/javascript/config.js" Line="48" Column="2" />
       <File FileName="sXUL/sXUL.Addin/Ajax.cs" Line="88" Column="8" />
-      <File FileName="sXUL/javascript/tools.js" Line="22" Column="3" />
+      <File FileName="sXUL/javascript/tools.js" Line="129" Column="3" />
       <File FileName="sXUL/sXUL/Runtime.cs" Line="48" Column="62" />
     </Files>
   </MonoDevelop.Ide.Workbench>
