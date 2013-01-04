@@ -1,10 +1,11 @@
 tree : function (attributes)
 {
 	var _attributes = attributes;				
-	var _elements = Array ();
-	var _rows = Array ();
+	var _elements = new Array ();
+	var _rows = new Array ();
 	
 	var _temp = {};			
+	_temp.refresh = true;
 	_temp.filterColumns = new Array ();
 	
 	this.addRow = addRow;
@@ -12,11 +13,14 @@ tree : function (attributes)
 	
 	this.setRow = setRow;
 	this.getRow = getRow;
+	
+	this.enableRefresh = enableRefresh;
+	this.disableRefresh = disableRefresh;
 							
 	this.sort = sort;		
 	this.filter = filter;							
 	
-	this.clear = clear;
+	this.clear = clear2;
 	
 	this.getCurrentIndex = getCurrentIndex;
 	
@@ -83,10 +87,22 @@ tree : function (attributes)
 		}
 	}
 	
+	function enableRefresh ()
+	{
+		_temp.refresh = true;
+		refresh ();
+	}
+	
+	function disableRefresh ()
+	{
+		_temp.refresh = false;
+	}
 	
 						
 	function refresh ()
-	{									
+	{				
+		if (_temp.refresh)					
+		{
 		// Clear all rows.
 		clear ();
 		
@@ -179,7 +195,8 @@ tree : function (attributes)
 					}							
 				}
 			}
-		}				
+		}	
+		}			
 	}	
 	
 	function drawRow (attributes)
@@ -235,6 +252,14 @@ tree : function (attributes)
 		{
 			_elements.treeChildren.removeChild (_elements.treeChildren.firstChild);
 		}
+		
+	//	_rows = new Array ();
+	}
+	
+	function clear2 ()
+	{
+		clear ()
+		_rows = new Array ();
 	}
 			
 	function sort (attributes)
