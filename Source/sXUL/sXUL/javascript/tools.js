@@ -21,25 +21,26 @@ fileDelete : function (path)
 		file.remove (false);
 },
 
-print : function (contentWindow, nsiPrintSettings, onDone, listener)
+//print : function (contentWindow, nsiPrintSettings, onDone, onError)
+print : function (attributes)
 {
-	nsiPrintSettings.headerStrLeft = "";
-	nsiPrintSettings.headerStrCenter = "";
-	nsiPrintSettings.headerStrRight = "";
-	nsiPrintSettings.footerStrLeft = "";
-	nsiPrintSettings.footerStrCenter = "";
-	nsiPrintSettings.footerStrRight = "";
+	attributes.settings.headerStrLeft = "";
+	attributes.settings.headerStrCenter = "";
+	attributes.settings.headerStrRight = "";
+	attributes.settings.footerStrLeft = "";
+	attributes.settings.footerStrCenter = "";
+	attributes.settings.footerStrRight = "";
 
-  	var req = contentWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
-    var wbprint = req.getInterface(Components.interfaces.nsIWebBrowserPrint);
+  	var req = attributes.contentWindow.QueryInterface (Components.interfaces.nsIInterfaceRequestor);
+    var wbprint = req.getInterface( Components.interfaces.nsIWebBrowserPrint);
     
-    if (!listener)
+    if (!attributes.listener)
     {
-		listener = 
+		attributes.listener = 
 		{
-			onStateChange: function(aWebProgress, aRequest, aStateFlags, aStatus) 
+			onStateChange: function (aWebProgress, aRequest, aStateFlags, aStatus) 
       		{
-      		//	sXUL.console.log (aStateFlags);
+      			//	sXUL.console.log (aStateFlags);
       			if (aStateFlags & Components.interfaces.nsIWebProgressListener.STATE_IS_REQUEST)
       			{
       			//	sXUL.console.log ("STATE_IS_REQUEST")
@@ -75,11 +76,14 @@ print : function (contentWindow, nsiPrintSettings, onDone, listener)
 				if (aStateFlags & Components.interfaces.nsIWebProgressListener.STATE_STOP && aStateFlags & Components.interfaces.nsIWebProgressListener.STATE_IS_NETWORK) 
       			{
       			//	sXUL.console.log ("DONE");
-      				onDone ();
+      				if (attributes.onDone != null)
+    				{
+    					setTimeout (attributes.onDone, 1);
+    				}      				
 	 			}
         	},		
         						
-        	onProgressChange : function(aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) 
+        	onProgressChange : function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress) 
         	{
         	},
 
@@ -90,7 +94,29 @@ print : function (contentWindow, nsiPrintSettings, onDone, listener)
     	};
     }    
     
-    wbprint.print(nsiPrintSettings, listener);				
+	try
+    {
+  		wbprint.print (attributes.settings, attributes.listener);				
+  	}
+    catch (exception)
+    {
+    	sXUL.console.log (exception.message.indexOf ("0x80004004 (NS_ERROR_ABORT)"))	
+    	
+    	if (exception.message.indexOf ("0x80004004 (NS_ERROR_ABORT)") == -1)
+    	{
+    		if (attributes.onError != null)
+    		{
+	   			setTimeout (attributes.onError, 1);
+   			}	
+    	}   
+    	else
+    	{
+    		if (attributes.onDone != null)
+    		{
+	   			setTimeout (attributes.onDone, 1);
+   			}	
+    	}     	        	
+    }
 },
 
 getLocalDirectory : function () 
