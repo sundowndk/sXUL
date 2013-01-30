@@ -558,6 +558,10 @@ tree : function (attributes)
 		{
 	 		_rows[_rows.length] = attributes;
 	 	}
+	 	else
+	 	{
+	 		setRow (attributes);
+	 	}
 	 		 		 				 
 	 	refresh ();
 	 	
@@ -623,6 +627,7 @@ tree : function (attributes)
 		}
 		else
 		{
+			var ok = false;
 			for (idx in _rows)
 			{
 				if (_rows[idx].data.id == attributes.data.id)
@@ -635,10 +640,15 @@ tree : function (attributes)
 						if (attributes.data[treeColumn.id] != null)
 						{
 							_rows[idx].data[treeColumn.id] = attributes.data[treeColumn.id];									
+							ok = true;
 						}
 					}		
 					break;										
 				}
+			}
+			if (!ok)
+			{
+				addRow (attributes);
 			}
 		}
 		
