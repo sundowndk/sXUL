@@ -95,7 +95,7 @@ print : function (attributes)
     }    
     
 	try
-    {
+   {
   		wbprint.print (attributes.settings, attributes.listener);				
   	}
     catch (exception)
@@ -109,7 +109,7 @@ print : function (attributes)
 	   			setTimeout (attributes.onError, 1);
    			}	
     	}   
-    	else
+ 	  	else
     	{
     		if (attributes.onDone != null)
     		{
