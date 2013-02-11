@@ -641,6 +641,7 @@ tree : function (attributes)
 						{
 							_rows[idx].data[treeColumn.id] = attributes.data[treeColumn.id];									
 							ok = true;
+							break;
 						}
 					}		
 					break;										
