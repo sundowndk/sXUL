@@ -15,6 +15,8 @@ tree : function (attributes)
 	this.setRow = setRow;
 	this.getRow = getRow;
 	
+	this.select = select;
+	
 	this.enableRefresh = enableRefresh;
 	this.disableRefresh = disableRefresh;
 							
@@ -249,6 +251,23 @@ tree : function (attributes)
 		
 		_elements.tree.view = newView;
 	};
+	
+	
+	function select (row)
+	{
+		if (row == -1)
+		{
+			_elements.tree.view.selection.clear ();
+		}
+		
+		sXUL.console.log (row +" "+ _elements.tree.view.rowCount)
+		
+		if (row > -1 && row <= (_elements.tree.view.rowCount - 1))		
+		{
+			_elements.tree.view.selection.select (row);	
+		}
+	}
+	
 	
 	function onDoubleClick (event)
 	{
@@ -641,7 +660,7 @@ tree : function (attributes)
 						{
 							_rows[idx].data[treeColumn.id] = attributes.data[treeColumn.id];									
 							ok = true;
-							break;
+							///break;
 						}
 					}		
 					break;										
