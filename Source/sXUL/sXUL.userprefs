@@ -2,11 +2,10 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/javascript/helpers/tree.js">
     <Files>
-      <File FileName="../../gitpush.sh" Line="1" Column="1" />
       <File FileName="sXUL/javascript/config.js" Line="48" Column="2" />
       <File FileName="sXUL/sXUL.Addin/Ajax.cs" Line="88" Column="8" />
       <File FileName="sXUL/javascript/event.js" Line="1" Column="1" />
-      <File FileName="sXUL/javascript/helpers/tree.js" Line="663" Column="11" />
+      <File FileName="sXUL/javascript/helpers/tree.js" Line="424" Column="94" />
       <File FileName="sXUL/javascript/tools.js" Line="119" Column="5" />
     </Files>
   </MonoDevelop.Ide.Workbench>
