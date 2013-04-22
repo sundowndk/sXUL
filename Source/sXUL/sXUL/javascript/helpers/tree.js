@@ -261,11 +261,15 @@ tree : function (attributes)
 			_elements.tree.view.selection.clear ();
 		}
 		
-		sXUL.console.log (row +" "+ _elements.tree.view.rowCount)
+		//sXUL.console.log (row +" "+ _elements.tree.view.rowCount)
 		
 		if (row > -1 && row <= (_elements.tree.view.rowCount - 1))		
 		{
 			_elements.tree.view.selection.select (row);	
+			
+			var boxobject = _elements.tree.boxObject;
+  			boxobject.QueryInterface(Components.interfaces.nsITreeBoxObject);
+  			boxobject.ensureRowIsVisible(row);			
 		}
 	}
 	
@@ -309,6 +313,12 @@ tree : function (attributes)
 		{
 			_temp.visibleRows = 0;
 		// Clear all rows.
+		var visiblerow = _elements.tree.treeBoxObject.getFirstVisibleRow ();
+		var currentrow = _elements.tree.currentIndex;
+		
+		var onselect = _elements.tree.onselect;
+		_elements.tree.onselect = null;
+		
 		clear ();
 		
 		var compareFunc;
@@ -447,12 +457,17 @@ tree : function (attributes)
 		
 		var filterColumnsLength = _temp.filterColumns.length;
 	
+	
+		
+		
 		for (var idx = 0; idx < 11; idx++) 
 		{
 			for (index in _rows)
 			{	
 				if (filterColumnsLength > 0)
 				{	
+					//if (_temp.filterValue.length > 3)
+					{
 					var skip = true;
 												
 					if (_temp.filterDirection == "in")
@@ -482,6 +497,7 @@ tree : function (attributes)
 					{
 						continue;
 					}
+					}
 				}				
 											
 				if (_rows[index].level == idx)
@@ -495,9 +511,22 @@ tree : function (attributes)
 					{							
 					}							
 				}
+			}		
+		}
+		
+		
+		
+			if (currentrow >= 0)
+			{
+				_elements.tree.view.selection.select (currentrow);				
 			}
-		}	
+			
+			
+  			_elements.tree.treeBoxObject.scrollToRow (visiblerow);				
+  			_elements.tree.onselect = onselect;
 		}			
+		
+		
 	}	
 	
 	function drawRow (attributes)
@@ -626,7 +655,10 @@ tree : function (attributes)
 		_temp.filterValue = attributes.value;
 		_temp.filterDirection = attributes.direction;
 		
+		if (_temp.filterValue.length > 3 || _temp.filterValue.length == 0)
+		{		
 		refresh ();
+		}
 	}
 			
 	function addRow (attributes)
