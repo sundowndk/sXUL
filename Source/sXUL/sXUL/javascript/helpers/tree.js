@@ -8,6 +8,8 @@ tree : function (attributes)
 	_temp.refresh = true;
 	_temp.filterColumns = new Array ();
 	_temp.visibleRows = 0;
+	_temp.breakRefresh = false;
+	_temp.refreshInProgress = false;
 	
 	this.addRow = addRow;
 	this.removeRow = removeRow;
@@ -26,6 +28,7 @@ tree : function (attributes)
 	this.clear = clear2;
 	
 	this.getCurrentIndex = getCurrentIndex;
+	this.setCurrentIndex = setCurrentIndex;
 	
 	init ();
 		
@@ -311,6 +314,8 @@ tree : function (attributes)
 	{				
 		if (_temp.refresh)					
 		{
+			_temp.refreshInProgress = true;
+		
 			_temp.visibleRows = 0;
 		// Clear all rows.
 		var visiblerow = _elements.tree.treeBoxObject.getFirstVisibleRow ();
@@ -318,6 +323,8 @@ tree : function (attributes)
 		
 		var onselect = _elements.tree.onselect;
 		_elements.tree.onselect = null;
+		
+		//_elements.treeChildren.collapsed = true;
 		
 		clear ();
 		
@@ -466,8 +473,6 @@ tree : function (attributes)
 			{	
 				if (filterColumnsLength > 0)
 				{	
-					//if (_temp.filterValue.length > 3)
-					{
 					var skip = true;
 												
 					if (_temp.filterDirection == "in")
@@ -497,24 +502,27 @@ tree : function (attributes)
 					{
 						continue;
 					}
-					}
-				}				
-											
+				}														
+																					
 				if (_rows[index].level == idx)
 				{
+					
 					try
-					{						
+					{	
+										
 						drawRow (_rows[index]);
 						_temp.visibleRows++;
+						
 					}
 					catch (Exception)
 					{							
 					}							
 				}
-			}		
+			}
+			
 		}
 		
-		
+		//_elements.treeChildren.collapsed = false;
 		
 			if (currentrow >= 0)
 			{
@@ -524,6 +532,8 @@ tree : function (attributes)
 			
   			_elements.tree.treeBoxObject.scrollToRow (visiblerow);				
   			_elements.tree.onselect = onselect;
+  			
+  			_temp.refreshInProgress = false;
 		}			
 		
 		
@@ -578,7 +588,9 @@ tree : function (attributes)
 				treeCell.setAttribute ('label', attributes.data[treeColumn.id]);
 				treeRow.appendChild (treeCell);
 			}
-		}																			
+		}			
+		
+		//app.thread.update ();																
 	}	
 	
 	function clear ()
@@ -654,10 +666,11 @@ tree : function (attributes)
 		_temp.filterColumns = attributes.columns.split (",");
 		_temp.filterValue = attributes.value;
 		_temp.filterDirection = attributes.direction;
-		
-		if (_temp.filterValue.length > 3 || _temp.filterValue.length == 0)
-		{		
-		refresh ();
+			
+			
+		if (_temp.filterValue.length > 1 || _temp.filterValue.length == 0)
+		{	
+			refresh ();
 		}
 	}
 			
@@ -865,6 +878,11 @@ tree : function (attributes)
 	{
 		return _elements.tree.view.selection.currentIndex; //returns -1 if the tree is not focused
 	}						
+	
+	function setCurrentIndex (value)
+	{
+		_elements.tree.view.selection.currentIndex = value;
+	}
 												
 	function getLevel (element)
 	{				
