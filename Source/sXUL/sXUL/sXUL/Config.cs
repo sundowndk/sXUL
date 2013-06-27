@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using SNDK;
 using SorentoLib;
+using SorentoLib.Services;
 
 namespace sXUL
 {
@@ -282,6 +283,90 @@ namespace sXUL
 			return result;
 		}
 		#endregion		
+
+
+		#region Data conversions.
+		/// <summary>
+		/// Convert <see cref="SorentoLib.User"/> to <see cref="SorentoLib.Data"/>.
+		/// </summary>
+		public Data ToData ()
+		{
+			return ToData (false);
+		}
+
+		/// <summary>
+		/// Convert <see cref="SorentoLib.User"/> to <see cref="SorentoLib.Data"/>.
+		/// </summary>
+		private Data ToData (bool Internal)
+		{
+			Data result = new Data ();
+			result.Add ("id", this._id);
+			result.Add ("createtimestamp", this._createtimestamp);
+			result.Add ("updatetimestamp", this._updatetimestamp);
+			result.Add ("usergroupids", this._usergroupids);
+			result.Add ("username", this._username);
+			result.Add ("realname", this._realname);
+			result.Add ("email", this._email);		
+			
+			if (Internal)
+				result.Add ("password", this._password);
+			
+			result.Add ("status", SNDK.Convert.EnumToString (this._status));
+			
+			return result;
+		}
+
+		/// <summary>
+		/// Convert from <see cref="SorentoLib.Data"/> string to <see cref="SorentoLib.User"/>.
+		/// </summary>
+		public static User FromData (Data Data)
+		{
+			return FromData (Data, false);
+		}
+
+		/// <summary>
+		/// Convert from <see cref="SorentoLib.Data"/> string to <see cref="SorentoLib.User"/>.
+		/// </summary>
+		private static User FromData (Data Data, bool Internal)
+		{
+			User result = new User ();
+
+			if (Data.ContainsKey ("id"))			
+				result._id = Data.Get<Guid>("id");
+			else
+				throw new Exception (string.Format (Strings.Exception.JSONFrom, typeof (User), "ID"));
+			
+			if (Data.ContainsKey ("createtimestamp"))
+				result._createtimestamp = Data.Get<int> ("createtimestamp");				
+			
+			if (Data.ContainsKey ("updatetimestamp"))
+				result._updatetimestamp = Data.Get<int> ("updatetimestamp");
+			
+			if (Data.ContainsKey ("usergroupids"))
+				foreach (Guid id in Data.Get<List<Guid>>("usergroupids"))
+					result._usergroupids.Add (id);
+			
+			if (Data.ContainsKey ("username"))
+				result._username = Data.Get<string>("username");
+
+			if (Data.ContainsKey ("email"))
+				result._email = Data.Get<string>("email");
+
+			if (Data.ContainsKey ("realname"))
+				result._realname = Data.Get<string>("realname");
+
+			if (Internal)
+				if (Data.ContainsKey ("password"))
+					result._password = Data.Get<string>("password");
+			else
+				result._password = User.Load (result._id)._password;
+			
+			if (Data.ContainsKey ("status"))
+				result._status = Data.Get<Enums.UserStatus> ("status");
+			
+			return result;
+		}
+		#endregion
 	}
 }
 

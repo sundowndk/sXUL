@@ -5,13 +5,14 @@ using System.Collections.Generic;
 
 using SNDK;
 using SorentoLib;
+using SorentoLib.Services;
 
 namespace sXUL
 {
 	public class Event
 	{
 		#region Public Static Fields
-		public static string DatastoreAisle = "sxul_events";
+
 		#endregion
 		
 		#region Private Fields
@@ -24,7 +25,7 @@ namespace sXUL
 
 		private string _name;
 		private Guid _ownerid;
-		private Hashtable _data;
+		private Data _data;
 		#endregion
 		
 		#region Public Fields
@@ -76,7 +77,7 @@ namespace sXUL
 			}
 		}
 		
-		public Hashtable Data
+		public Data Data
 		{
 			get
 			{
@@ -86,7 +87,7 @@ namespace sXUL
 		#endregion
 		
 		#region Constructor
-		public Event (Guid OwnerId, string Name, Hashtable Data)
+		public Event (Guid OwnerId, string Name, Data Data)
 		{
 			this._id = Guid.NewGuid ();
 			this._createtimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
@@ -105,105 +106,24 @@ namespace sXUL
 			this._sort = 0;
 			this._ownerid = Guid.Empty;
 			this._name = string.Empty;
-			this._data = new Hashtable ();
+			this._data = new Data ();
 		}
 		#endregion
 		
-		#region Public Methods
-		public void Save ()
+		#region Datastore Handling.
+		static public string DatastoreAisle
 		{
-			try
+			get
 			{
-				this._updatetimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
-				
-				Hashtable item = new Hashtable ();
-				
-				item.Add ("id", this._id);
-				item.Add ("createtimestamp", this._createtimestamp);
-				item.Add ("updatetimestamp", this._updatetimestamp);	
-				item.Add ("sort", this._sort);
-				item.Add ("name", this._name);
-				item.Add ("ownerid", this._ownerid);
-				item.Add ("data", this._data);
-				
-				SorentoLib.Services.Datastore.Meta meta = new SorentoLib.Services.Datastore.Meta ();
-				meta.Add ("updatetimestamp", this._updatetimestamp);
-				meta.Add ("ownerid", this._ownerid);
-				
-				SorentoLib.Services.Datastore.Set (DatastoreAisle, this._id.ToString (), SNDK.Convert.ToXmlDocument (item, this.GetType ().FullName.ToLower ()), meta);
+				return "sxul.event";
 			}
-			catch (Exception exception)
-			{
-				// LOG: LogDebug.ExceptionUnknown
-				SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
-				
-				// EXCEPTION: Exception.EventSave
-				throw new Exception (string.Format (Strings.Exception.EventSave, this._id.ToString ()));
-			}					
 		}
-		
-		public XmlDocument ToXmlDocument ()
-		{
-			Hashtable result = new Hashtable ();
-			
-			result.Add ("id", this._id);
-			result.Add ("createtimestamp", this._createtimestamp);
-			result.Add ("updatetimestamp", this._updatetimestamp);
 
-			result.Add ("name", this._name);			
-			result.Add ("ownerid", this._ownerid);			
-			result.Add ("data", this._data);
-			
-			return SNDK.Convert.ToXmlDocument (result, this.GetType ().FullName.ToLower ());
-		}
-		#endregion
-		
-		#region Public Static Methods
 		public static Event Load (Guid Id)
 		{
-			Event result;
-			
 			try
 			{
-				Hashtable item = (Hashtable)SNDK.Convert.FromXmlDocument (SNDK.Convert.XmlNodeToXmlDocument (SorentoLib.Services.Datastore.Get<XmlDocument> (DatastoreAisle, Id.ToString ()).SelectSingleNode ("(//sxul.event)[1]")));
-				result = new Event ();
-				
-				result._id = new Guid ((string)item["id"]);
-				
-				if (item.ContainsKey ("createtimestamp"))
-				{
-					result._createtimestamp = int.Parse ((string)item["createtimestamp"]);
-				}
-				
-				if (item.ContainsKey ("updatetimestamp"))
-				{
-					result._updatetimestamp = int.Parse ((string)item["updatetimestamp"]);
-				}
-
-				if (item.ContainsKey ("sort"))
-				{
-					result._sort = double.Parse ((string)item["sort"]);						
-				}
-
-				if (item.ContainsKey ("name"))
-				{
-					result._name = (string)item["name"];
-				}
-				
-				if (item.ContainsKey ("ownerid"))
-				{
-					result._ownerid = new Guid ((string)item["ownerid"]);
-				}
-				
-				if (item.ContainsKey ("data"))
-				{
-					try
-					{
-					result._data = (Hashtable)item["data"];
-					}
-					catch
-					{}
-				}
+				return FromData (Datastore.Get (Id).Data);
 			}
 			catch (Exception exception)
 			{
@@ -213,66 +133,28 @@ namespace sXUL
 				// EXCEPTION: Excpetion.EventLoadGuid
 				throw new Exception (string.Format (Strings.Exception.EventLoadGuid, Id));
 			}	
-			
-			return result;
-		}
-		
-		public static List<Event> List (EventListener EventListener)
-		{
-			List<Event> result = new List<Event> ();
-			
-			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle, new SorentoLib.Services.Datastore.MetaSearch ("ownerid", SorentoLib.Enums.DatastoreMetaSearchComparisonOperator.NotEqual, EventListener.Id)))
-//			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
-			{
-				try
-				{
-					Event e = Event.Load (new Guid (id));
-
-//					((TimeSpan)(DateTime.Now - new DateTime (1970, 1, 1)))
-//					if (e._updatetimestamp > EventListener.UpdateTimestamp)
-					if (e._updatetimestamp >= EventListener.UpdateTimestamp)
-					{
-						result.Add (e);
-					}
-				}
-				catch (Exception exception)
-				{
-					// LOG: LogDebug.ExceptionUnknown
-					SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
-					
-					// LOG: LogDebug.EventList
-					SorentoLib.Services.Logging.LogDebug (string.Format (Strings.LogDebug.EventList, id));
-				}
-			}
-			
-			result.Sort (delegate (Event e1, Event e2) { return e1.Sort.CompareTo (e2.Sort); });
-			
-			return result;
 		}
 
-		public static List<Event> List ()
+		public void Save ()
 		{
-			List<Event> result = new List<Event> ();
-
-			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
+			try
 			{
-				try
-				{
-					result.Add (Event.Load (new Guid (id)));
-				}
-				catch (Exception exception)
-				{
-					// LOG: LogDebug.ExceptionUnknown
-					SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
-					
-					// LOG: LogDebug.EventList
-					SorentoLib.Services.Logging.LogDebug (string.Format (Strings.LogDebug.EventList, id));
-				}
+				this._updatetimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
+				
+				SorentoLib.Services.Datastore.Meta meta = new SorentoLib.Services.Datastore.Meta ();
+				meta.Add ("updatetimestamp", this._updatetimestamp);
+				meta.Add ("ownerid", this._ownerid);
+
+				Datastore.Set (new Datastore.Item (DatastoreAisle, _id, ToData (), meta));
 			}
-			
-			result.Sort (delegate (Event e1, Event e2) { return e1.UpdateTimestamp.CompareTo (e2.UpdateTimestamp); });
-			
-			return result;
+			catch (Exception exception)
+			{
+				// LOG: LogDebug.ExceptionUnknown
+				Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (Event), exception.Message));
+
+				// EXCEPTION: Exception.EventSave
+				throw new Exception (string.Format (Strings.Exception.EventSave, this._id.ToString ()));
+			}					
 		}
 
 		public static void Delete (Event Event)
@@ -284,19 +166,75 @@ namespace sXUL
 		{			
 			try
 			{
-				SorentoLib.Services.Datastore.Delete (DatastoreAisle, Id.ToString ());
+				SorentoLib.Services.Datastore.Delete (DatastoreAisle, Id);
 			}
 			catch (Exception exception)
 			{
 				// LOG: LogDebug.ExceptionUnknown
-				SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
+				Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (Event), exception.Message));
 				
 				// EXCEPTION: Exception.EventDeleteGuid
 				throw new Exception (string.Format (Strings.Exception.EventDeleteGuid, Id.ToString ()));
 			}			
 		}
-		#endregion
 
+		public static List<Event> List (EventListener EventListener)
+		{
+			List<Event> result = new List<Event> ();
+
+			foreach (Datastore.Item item in Datastore.List (DatastoreAisle, Datastore.Filter.Where ("ownerid", Datastore.Filter.ComparisonOperator.NotEqual, EventListener.Id), Datastore.Sort.AccendingBy ("sort")))
+			{
+				try
+				{
+					Event e = FromData (item.Data);
+					if (e._updatetimestamp >= EventListener.UpdateTimestamp)
+					{
+						result.Add (e);
+					}
+				}
+				catch (Exception exception)
+				{
+					// LOG: LogDebug.ExceptionUnknown
+					Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (Event), exception.Message));
+
+					
+					// LOG: LogDebug.EventList
+					Logging.LogDebug (string.Format (Strings.LogDebug.EventList, item.Id));
+				}
+			}
+			
+//			result.Sort (delegate (Event e1, Event e2) { return e1.Sort.CompareTo (e2.Sort); });
+			
+			return result;
+		}
+
+		public static List<Event> List ()
+		{
+			List<Event> result = new List<Event> ();
+
+			foreach (Datastore.Item item in Datastore.List (DatastoreAisle, Datastore.Sort.AccendingBy ("sort")))
+			{
+				try
+				{
+					result.Add (FromData (item.Data));
+				}
+				catch (Exception exception)
+				{
+					// LOG: LogDebug.ExceptionUnknown
+					Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (Event), exception.Message));
+
+					
+					// LOG: LogDebug.EventList
+					Logging.LogDebug (string.Format (Strings.LogDebug.EventList, item.Id));
+				}
+			}
+			
+//			result.Sort (delegate (Event e1, Event e2) { return e1.UpdateTimestamp.CompareTo (e2.UpdateTimestamp); });
+			
+			return result;
+		}
+		#endregion
+		
 		#region Internal Static Methods
 		internal static void ServiceGarbageCollector ()
 		{
@@ -311,13 +249,58 @@ namespace sXUL
 					catch (Exception exception)
 					{
 						// LOG: LogDebug.ExceptionUnknown
-						SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENT", exception.Message));
+						Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (Event), exception.Message));
 					}
 				}
 			}			
 			
 			// LOG: LogDebug.SessionGarbageCollector
 			SorentoLib.Services.Logging.LogDebug (Strings.LogDebug.EventGarbageCollector);
+		}
+		#endregion
+
+
+		#region Data conversions.
+		public Data ToData ()
+		{
+			Data result = new Data ();
+			result.Add ("id", this._id);
+			result.Add ("createtimestamp", this._createtimestamp);
+			result.Add ("updatetimestamp", this._updatetimestamp);
+			result.Add ("name", this._name);			
+			result.Add ("ownerid", this._ownerid);			
+			result.Add ("data", this._data);
+			return result;
+		}
+
+		public static Event FromData (Data data)
+		{
+			Event result = new Event ();
+
+			if (data.ContainsKey ("id"))			
+				result._id = data.Get<Guid>("id");
+			else
+				throw new Exception (string.Format (SorentoLib.Strings.Exception.JSONFrom, typeof (Event), "ID"));
+			
+			if (data.ContainsKey ("createtimestamp"))
+				result._createtimestamp = data.Get<int>("createtimestamp");
+				
+			if (data.ContainsKey ("updatetimestamp"))
+				result._updatetimestamp = data.Get<int>("updatetimestamp");
+
+			if (data.ContainsKey ("sort"))
+				result._sort = data.Get<double>("sort");
+
+			if (data.ContainsKey ("name"))
+				result._name = data.Get<string>("name");
+				
+			if (data.ContainsKey ("ownerid"))
+				result._ownerid = data.Get<Guid>("ownerid");
+				
+			if (data.ContainsKey ("data"))
+				result._data = data.Get<Data>("data");
+			
+			return result;
 		}
 		#endregion
 	}

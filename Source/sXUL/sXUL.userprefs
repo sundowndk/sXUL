@@ -1,13 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/javascript/tools.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="sXUL/sXUL.Addin/AJAJ.cs">
     <Files>
-      <File FileName="sXUL/javascript/config.js" Line="48" Column="2" />
-      <File FileName="sXUL/sXUL.Addin/Ajax.cs" Line="8" Column="16" />
-      <File FileName="sXUL/javascript/event.js" Line="1" Column="1" />
-      <File FileName="sXUL/javascript/helpers/tree.js" Line="593" Column="5" />
-      <File FileName="sXUL/javascript/tools.js" Line="66" Column="33" />
-      <File FileName="sXUL/sXUL/EventListener.cs" Line="72" Column="63" />
+      <File FileName="sXUL/sXUL.Addin/AJAJ.cs" Line="67" Column="147" />
+      <File FileName="sXUL/javascript/eventlistener.js" Line="41" Column="19" />
+      <File FileName="sXUL/sXUL/EventListener.cs" Line="68" Column="55" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

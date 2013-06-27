@@ -15,8 +15,8 @@
 	<Extension path = "/SorentoLib/Init">
 		<Type type="sXUL.Addin.Init"/>
 	</Extension>												
-																
-	<Extension path = "/SorentoLib/Resolver/Ajaxes">
-		<Type type="sXUL.Addin.Ajax"/>
+																			
+	<Extension path = "/SorentoLib/Resolver/AJAJS">
+		<Type type="sXUL.Addin.AJAJ"/>
 	</Extension>				
 </Addin>

@@ -333,8 +333,11 @@ tree : function (attributes)
 		{
 			compareFunc = function (second, first) 
 			{
-				var a = first.data[_temp.sortColumn].toLowerCase ();
-				var b = second.data[_temp.sortColumn].toLowerCase ();
+//				var a = first.data[_temp.sortColumn].toLowerCase ();
+//				var b = second.data[_temp.sortColumn].toLowerCase ();
+				
+				var a = first.data[_temp.sortColumn];
+				var b = second.data[_temp.sortColumn];
 			
 				function chunkify (t) 
 				{
@@ -389,8 +392,12 @@ tree : function (attributes)
 		{  	
 		compareFunc = function (first, second) 
 			{
-				var a = first.data[_temp.sortColumn].toLowerCase ();
-				var b = second.data[_temp.sortColumn].toLowerCase ();
+//				var a = first.data[_temp.sortColumn].toLowerCase ();
+//				var b = second.data[_temp.sortColumn].toLowerCase ();
+				
+				var a = first.data[_temp.sortColumn];
+				var b = second.data[_temp.sortColumn];
+				
 			
 				function chunkify (t) 
 				{

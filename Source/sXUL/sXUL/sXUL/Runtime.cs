@@ -28,11 +28,11 @@ namespace sXUL
 				//SNDK.IO.CreateSymlink (SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_addins) + "sXUL/resources/html", SorentoLib.Services.Config.Get<string> (SorentoLib.Enums.ConfigKey.path_html) + "sxul");
 
 				// Create default usergroups
-				UsergroupUser =	SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("cee43668-e44b-4675-b18d-3b297a84b953"), "sXUL User", AddinId.ToString ());
-				UsergroupModerator = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("f54caf98-59ad-4082-b235-0d7965dd1816"), "sXUL Moderator", AddinId.ToString ());
-				UsergroupEditor = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("90a8ab5f-5353-416f-b245-4ad568330927"), "sXUL Editor", AddinId.ToString ());
-				UsergroupAuthor = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("573e0d91-3bee-490f-b400-6ea0ad7b5470"), "sCMS Author", AddinId.ToString ());
-				UsergroupAdministrator = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("6321156a-ff6a-4e01-a5bd-87e904baa45f"), "sCMS Administrator", AddinId.ToString ());
+				UsergroupUser =	SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("cee43668-e44b-4675-b18d-3b297a84b953"), "sXUL User");
+				UsergroupModerator = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("f54caf98-59ad-4082-b235-0d7965dd1816"), "sXUL Moderator");
+				UsergroupEditor = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("90a8ab5f-5353-416f-b245-4ad568330927"), "sXUL Editor");
+				UsergroupAuthor = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("573e0d91-3bee-490f-b400-6ea0ad7b5470"), "sCMS Author");
+				UsergroupAdministrator = SorentoLib.Usergroup.AddBuildInUsergroup (new Guid ("6321156a-ff6a-4e01-a5bd-87e904baa45f"), "sCMS Administrator");
 
 				// GARBAGE COLLECTOR
 				SorentoLib.Services.Events.ServiceGarbageCollector += EventhandlerServiceGarbageCollector;

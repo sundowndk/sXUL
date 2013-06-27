@@ -4,10 +4,10 @@ timer : null,
 
 attach : function ()
 {
-	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Attach", "data", "POST", false);	
+	var request = new sorentoLib.AJAJ.request ({url: didius.runtime.ajaxUrl, method: "sXUL.EventListener.Attach"});	
 	request.send ();
 	
-	var result = request.respons ()["value"];
+	var result = request.respons ()["result"];
 	
 	sXUL.eventListener.id = result;
 	
@@ -24,7 +24,7 @@ detach : function (id)
 	var content = new Array ();
 	content["eventlistenerid"] = id;
 
-	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Detach", "data", "POST", false);		
+	var request = new sorentoLib.AJAJ.request ({url: didius.runtime.ajaxUrl, method: "sXUL.EventListener.Detach", data: content});		
 	request.send (content);			
 },
 
@@ -33,12 +33,12 @@ update : function (attributes)
 	if (!attributes)
 		attributes = new Array ();
 	
-	//if (!attributes.id)
-		//throw "No ID given, cannot update eventListener";
+	if (!attributes.id)
+		throw "No ID given, cannot update eventListener";
 		
 	//attributes.id = sXUL.eventListener.id;
 				
-	var content = new Array ();			
+	var content = {};
 							
 	content["eventlistenerid"] = attributes.id;
 	
@@ -81,7 +81,7 @@ update : function (attributes)
 							}																																				
 					};
 		
-	var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Update", "data", "POST", true);			
-	request.onLoaded (onDone);
-	request.send (content);													
+	var request = new sorentoLib.AJAJ.request ({url: didius.runtime.ajaxUrl, method: "sXUL.EventListener.Update", async: true, data: content});			
+	request.setAttribute ("onFinished", onDone);	
+	request.send ();
 }

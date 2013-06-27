@@ -5,18 +5,14 @@ using System.Collections.Generic;
 
 using SNDK;
 using SorentoLib;
+using SorentoLib.Services;
 
 namespace sXUL
 {
 	public class EventListener
-	{
-		#region Public Static Fields
-		public static string DatastoreAisle = "sxul_eventlistener";
-		#endregion
-		
+	{	
 		#region Private Fields
-		private Guid _id;
-		
+		private Guid _id;		
 		private int _createtimestamp;
 		private int _updatetimestamp;
 		#endregion
@@ -56,87 +52,48 @@ namespace sXUL
 		}
 		#endregion
 		
-		#region Public Methods
+		#region Datastore Handling.
+		static public string DatastoreAisle
+		{
+			get
+			{
+				return "sxul.eventlistener";
+			}
+		}
+
+		public static EventListener Load (Guid Id)
+		{
+			try
+			{
+				return FromData (Datastore.Get (DatastoreAisle, Id).Data);
+			}
+			catch (Exception exception)
+			{
+				// LOG: LogDebug.ExceptionUnknown
+				Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (EventListener), exception.Message));
+
+				// EXCEPTION: Excpetion.EventListenerLoadGuid
+				throw new Exception (string.Format (Strings.Exception.EventListenerLoadGuid, Id));
+			}	
+		}
+
 		public void Save ()
 		{
 			try
 			{
 				this._updatetimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
 				
-				Hashtable item = new Hashtable ();
-				
-				item.Add ("id", this._id);
-				item.Add ("createtimestamp", this._createtimestamp);
-				item.Add ("updatetimestamp", this._updatetimestamp);	
-				
-				SorentoLib.Services.Datastore.Set (DatastoreAisle, this._id.ToString (), SNDK.Convert.ToXmlDocument (item, this.GetType ().FullName.ToLower ()));
+				SorentoLib.Services.Datastore.Set (new Datastore.Item (DatastoreAisle, this._id, ToData ()));
 			}
 			catch (Exception exception)
 			{
 				// LOG: LogDebug.ExceptionUnknown
-				SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
+				Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (EventListener), exception.Message));
+
 				
 				// EXCEPTION: Exception.EventListenerSave
 				throw new Exception (string.Format (Strings.Exception.EventListenerSave, this._id.ToString ()));
 			}					
-		}
-		#endregion
-		
-		#region Public Static Methods
-		public static EventListener Load (Guid Id)
-		{
-			EventListener result;
-			
-			try
-			{
-				Hashtable item = (Hashtable)SNDK.Convert.FromXmlDocument (SNDK.Convert.XmlNodeToXmlDocument (SorentoLib.Services.Datastore.Get<XmlDocument> (DatastoreAisle, Id.ToString ()).SelectSingleNode ("(//sxul.eventlistener)[1]")));
-				result = new EventListener ();
-				
-				result._id = new Guid ((string)item["id"]);
-				
-				if (item.ContainsKey ("createtimestamp"))
-				{
-					result._createtimestamp = int.Parse ((string)item["createtimestamp"]);
-				}
-				
-				if (item.ContainsKey ("updatetimestamp"))
-				{
-					result._updatetimestamp = int.Parse ((string)item["updatetimestamp"]);
-				}
-			}
-			catch (Exception exception)
-			{
-				// LOG: LogDebug.ExceptionUnknown
-				SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
-				
-				// EXCEPTION: Excpetion.EventListenerLoadGuid
-				throw new Exception (string.Format (Strings.Exception.EventListenerLoadGuid, Id));
-			}	
-			
-			return result;
-		}
-
-		private static List<EventListener> List ()
-		{
-			List<EventListener> result = new List<EventListener> ();
-			
-			foreach (string id in SorentoLib.Services.Datastore.ListOfShelfs (DatastoreAisle))
-			{
-				try
-				{
-					result.Add (EventListener.Load (new Guid (id)));
-				}
-				catch (Exception exception)
-				{
-					// LOG: LogDebug.ExceptionUnknown
-					SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
-					
-					// LOG: LogDebug.EventList
-					SorentoLib.Services.Logging.LogDebug (string.Format (Strings.LogDebug.EventListenerList, id));
-				}
-			}
-						
-			return result;
 		}
 
 		public static void Delete (EventListener EventListener)
@@ -148,18 +105,43 @@ namespace sXUL
 		{			
 			try
 			{
-				SorentoLib.Services.Datastore.Delete (DatastoreAisle, Id.ToString ());
+				Datastore.Delete (DatastoreAisle, Id);
 			}
 			catch (Exception exception)
 			{
 				// LOG: LogDebug.ExceptionUnknown
-				SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
-				
+				Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (EventListener), exception.Message));
+
 				// EXCEPTION: Exception.EventListenerDeleteGuid
 				throw new Exception (string.Format (Strings.Exception.EventListenerDeleteGuid, Id.ToString ()));
 			}			
 		}
+
+		private static List<EventListener> List ()
+		{
+			List<EventListener> result = new List<EventListener> ();
+			
+			foreach (Datastore.Item item in Datastore.List (DatastoreAisle))
+			{
+				try
+				{
+					result.Add (FromData (item.Data));
+				}
+				catch (Exception exception)
+				{
+					// LOG: LogDebug.ExceptionUnknown
+					Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (EventListener), exception.Message));
+
+					// LOG: LogDebug.EventList
+					Logging.LogDebug (string.Format (Strings.LogDebug.EventListenerList, item.Id));
+				}
+			}
+						
+			return result;
+		}
+		#endregion
 		
+		#region Public Static Methods
 		public static Guid Attach ()
 		{
 			EventListener eventlistener = new EventListener ();
@@ -194,7 +176,7 @@ namespace sXUL
 			return result;
 		}
 		
-		public static void Update (Guid Id, string EventId, Hashtable EventData)
+		public static void Update (Guid Id, string EventId, Data EventData)
 		{
 			if (EventId != string.Empty)
 			{
@@ -204,7 +186,7 @@ namespace sXUL
 		}
 		#endregion
 
-		#region Internal Static Methods
+		#region Housekeeping.
 		internal static void ServiceGarbageCollector ()
 		{
 			foreach (EventListener eventlistener in List ())
@@ -218,13 +200,42 @@ namespace sXUL
 					catch (Exception exception)
 					{
 						// LOG: LogDebug.ExceptionUnknown
-						SorentoLib.Services.Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, "SXUL.EVENTLISTENER", exception.Message));
+						Logging.LogDebug (string.Format (SorentoLib.Strings.LogDebug.ExceptionUnknown, typeof (EventListener), exception.Message));
 					}
 				}
 			}			
 			
 			// LOG: LogDebug.SessionGarbageCollector
-			SorentoLib.Services.Logging.LogDebug (Strings.LogDebug.EventListenerGarbageCollector);
+			Logging.LogDebug (Strings.LogDebug.EventListenerGarbageCollector);
+		}
+		#endregion
+
+		#region Data conversions.
+		public Data ToData ()
+		{
+			Data result = new Data ();
+			result.Add ("id", this._id);
+			result.Add ("createtimestamp", this._createtimestamp);
+			result.Add ("updatetimestamp", this._updatetimestamp);	
+			return result;
+		}
+
+		public static EventListener FromData (Data data)
+		{
+			EventListener result = new EventListener ();
+
+			if (data.ContainsKey ("id"))			
+				result._id = data.Get<Guid>("id");
+			else
+				throw new Exception (string.Format (SorentoLib.Strings.Exception.JSONFrom, typeof (Event), "ID"));
+			
+			if (data.ContainsKey ("createtimestamp"))
+				result._createtimestamp = data.Get<int>("createtimestamp");
+				
+			if (data.ContainsKey ("updatetimestamp"))
+				result._updatetimestamp = data.Get<int>("updatetimestamp");
+			
+			return result;
 		}
 		#endregion
 	}

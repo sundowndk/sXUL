@@ -17,10 +17,10 @@ var sXUL =
 		
 		attach : function ()
 		{
-			var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Attach", "data", "POST", false);	
+			var request = new sorentoLib.AJAJ.request ({url: didius.runtime.ajaxUrl, method: "sXUL.EventListener.Attach"});	
 			request.send ();
 			
-			var result = request.respons ()["value"];
+			var result = request.respons ()["result"];
 			
 			sXUL.eventListener.id = result;
 			
@@ -37,7 +37,7 @@ var sXUL =
 			var content = new Array ();
 			content["eventlistenerid"] = id;
 		
-			var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Detach", "data", "POST", false);		
+			var request = new sorentoLib.AJAJ.request ({url: didius.runtime.ajaxUrl, method: "sXUL.EventListener.Detach", data: content});		
 			request.send (content);			
 		},
 		
@@ -46,12 +46,12 @@ var sXUL =
 			if (!attributes)
 				attributes = new Array ();
 			
-			//if (!attributes.id)
-				//throw "No ID given, cannot update eventListener";
+			if (!attributes.id)
+				throw "No ID given, cannot update eventListener";
 				
 			//attributes.id = sXUL.eventListener.id;
 						
-			var content = new Array ();			
+			var content = {};
 									
 			content["eventlistenerid"] = attributes.id;
 			
@@ -94,9 +94,9 @@ var sXUL =
 									}																																				
 							};
 				
-			var request = new SNDK.ajax.request (didius.runtime.ajaxUrl, "cmd=Ajax;cmd.function=sXUL.EventListener.Update", "data", "POST", true);			
-			request.onLoaded (onDone);
-			request.send (content);													
+			var request = new sorentoLib.AJAJ.request ({url: didius.runtime.ajaxUrl, method: "sXUL.EventListener.Update", async: true, data: content});			
+			request.setAttribute ("onFinished", onDone);	
+			request.send ();
 		}
 	},
 
@@ -451,8 +451,11 @@ var sXUL =
 				{
 					compareFunc = function (second, first) 
 					{
-						var a = first.data[_temp.sortColumn].toLowerCase ();
-						var b = second.data[_temp.sortColumn].toLowerCase ();
+		//				var a = first.data[_temp.sortColumn].toLowerCase ();
+		//				var b = second.data[_temp.sortColumn].toLowerCase ();
+						
+						var a = first.data[_temp.sortColumn];
+						var b = second.data[_temp.sortColumn];
 					
 						function chunkify (t) 
 						{
@@ -507,8 +510,12 @@ var sXUL =
 				{  	
 				compareFunc = function (first, second) 
 					{
-						var a = first.data[_temp.sortColumn].toLowerCase ();
-						var b = second.data[_temp.sortColumn].toLowerCase ();
+		//				var a = first.data[_temp.sortColumn].toLowerCase ();
+		//				var b = second.data[_temp.sortColumn].toLowerCase ();
+						
+						var a = first.data[_temp.sortColumn];
+						var b = second.data[_temp.sortColumn];
+						
 					
 						function chunkify (t) 
 						{

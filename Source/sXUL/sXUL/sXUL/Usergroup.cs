@@ -10,18 +10,19 @@ namespace sXUL
 	{
 		public Usergroup ()  : base ()
 		{
-			base.Scope = Runtime.AddinId.ToString ();
+//			base.Scope = Runtime.AddinId.ToString ();
 		}
 		
 		new static public List<SorentoLib.Usergroup> List ()
 		{
-			return SorentoLib.Usergroup.List (Runtime.AddinId.ToString ());
+//			return SorentoLib.Usergroup.List (Runtime.AddinId.ToString ());
+			return SorentoLib.Usergroup.List ();
 		}
 
-		new public static SorentoLib.Usergroup FromXmlDocument (XmlDocument xmlDocument)
-		{
-			return SorentoLib.Usergroup.FromXmlDocument (xmlDocument);
-		}
+//		new public static SorentoLib.Usergroup FromXmlDocument (XmlDocument xmlDocument)
+//		{
+//			return SorentoLib.Usergroup.FromXmlDocument (xmlDocument);
+//		}
 	}
 }
 

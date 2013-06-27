@@ -9,12 +9,13 @@ namespace sXUL
 	{
 		public User (string username, string email)  : base (username, email)
 		{
-			base.Scope = Runtime.AddinId.ToString ();
+//			base.Scope = Runtime.AddinId.ToString ();
 		}
 
 		new static public List<SorentoLib.User> List ()
 		{
-			return SorentoLib.User.List (Runtime.AddinId.ToString ());
+//			return SorentoLib.User.List (Runtime.AddinId.ToString ());
+			return SorentoLib.User.List ();
 		}
 	}
 }

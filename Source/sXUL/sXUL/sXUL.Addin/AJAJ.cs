@@ -7,20 +7,20 @@ using SorentoLib;
 
 namespace sXUL.Addin
 {
-	public class Ajax : SorentoLib.Addins.IAjaxBaseClass, SorentoLib.Addins.IAjax		
+	public class AJAJ : SorentoLib.Addins.IAJAJBaseClass, SorentoLib.Addins.IAJAJ
 	{
 		#region Constructor
-		public Ajax ()
+		public AJAJ ()
 		{
 			base.NameSpaces.Add ("sxul");
 		}
 		#endregion
 		
 		#region Public Methods
-		new public SorentoLib.Ajax.Respons Process (SorentoLib.Session Session, string Fullname, string Method)
+		new public SorentoLib.AJAJ.Respons Process (SorentoLib.Session Session, string Fullname, string Method)
 		{
-			SorentoLib.Ajax.Respons result = new SorentoLib.Ajax.Respons ();
-			SorentoLib.Ajax.Request request = new SorentoLib.Ajax.Request (Session.Request.QueryJar.Get ("data").Value);
+			SorentoLib.AJAJ.Respons result = new SorentoLib.AJAJ.Respons ();
+			SorentoLib.AJAJ.Request request = new SorentoLib.AJAJ.Request (Session.Request.QueryJar.Get ("data").Value);
 			
 			switch (Fullname.ToLower ())
 			{		
@@ -31,23 +31,21 @@ namespace sXUL.Addin
 					{					
 						case "attach":
 						{
-							result.Add (EventListener.Attach ());
+							result.Add ("result", EventListener.Attach ());
 							break;
 						}
 							
 						case "detach":
 						{
-							EventListener.Detach (request.getValue<Guid> ("eventlistenerid"));
+							EventListener.Detach (request.Data.Get<Guid> ("eventlistenerid"));
 							break;
 						}	
 							
 						case "update":
 						{
-							if (request.ContainsXPath ("eventid"))
+							if (request.Data.ContainsKey ("eventid"))
 							{
-//								Console.WriteLine (request.XmlDocument.InnerXml);
-
-								Hashtable item = (Hashtable)SNDK.Convert.FromXmlDocument (SNDK.Convert.XmlNodeToXmlDocument (request.GetXml ("eventdata") .SelectSingleNode ("(//eventdata)[1]")));
+//								Hashtable item = (Hashtable)SNDK.Convert.FromXmlDocument (SNDK.Convert.XmlNodeToXmlDocument (request.GetXml ("eventdata") .SelectSingleNode ("(//eventdata)[1]")));
 
 
 //								try
@@ -66,11 +64,15 @@ namespace sXUL.Addin
 //								Console.WriteLine (test2);
 //								object test = request.getValue<object> ("eventdata");
 
-								EventListener.Update (request.getValue<Guid> ("eventlistenerid"), request.getValue<string> ("eventid"), item);
+								EventListener.Update (request.Data.Get<Guid> ("eventlistenerid"), request.Data.Get<string> ("eventid"), request.Data.Get<Data> ("eventdata"));
 							}
 							else
 							{
-								result.Add (EventListener.Update (request.getValue<Guid> ("eventlistenerid")));
+								List<Data> events = new List<Data> ();
+								foreach (Event event_ in EventListener.Update (request.Data.Get<Guid> ("eventlistenerid")))
+									events.Add (event_.ToData ());
+
+								result.Add ("sxul.events", events);
 							}
 							break;
 						}
